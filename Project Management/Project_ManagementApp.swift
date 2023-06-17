@@ -9,12 +9,28 @@ import SwiftUI
 
 @main
 struct Project_ManagementApp: App {
-    let persistenceController = PersistenceController.shared
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-        }
-    }
+	@Environment(\.scenePhase) var scenePhase
+//	let persistenceController = PersistenceController.shared
+	let persistenceController = CoreDataManager.shared
+	
+	var body: some Scene {
+//#if os(iOS)
+		WindowGroup {
+			ContentView()
+				.environment(\.managedObjectContext, persistenceController.container.viewContext)
+		}
+		.onChange(of: scenePhase) { _ in
+			persistenceController.saveData()
+		}
+//#elseif os(macOS)
+//		WindowGroup {
+//			ContentView()
+//				.environment(\.managedObjectContext, persistenceController.container.viewContext)
+//		}
+//		.onChange(of: scenePhase) { _ in
+//			persistenceController.save()
+//		}
+//		.windowToolbarStyle(.expanded)
+//#endif
+	}
 }
